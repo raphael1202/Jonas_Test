@@ -1,0 +1,185 @@
+﻿@model JonasTest.ViewModel.DataTypesEnumViewModel
+
+@{
+    ViewBag.Title = "index";
+
+    int itemIndex = 0;
+    int itemOption = 0;
+}
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+
+<h2>index</h2>
+
+<input id="itemIndex" value="@itemIndex" style="display:none" />
+<input id="itemOption" value="@itemOption" style="display:none" />
+
+<form method="post">
+
+    <div class="form-group fieldGroup">
+        <div class="input-group">
+            @Html.EnumDropDownListFor(m => m.ItemTypes, "Select a question type", new { @class = "form-control" })
+            <div class="input-group-addon">
+                <a href="javascript:void(0)" class="btn btn-success addMore"><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> Add</a>
+            </div>
+        </div>
+    </div>
+
+    <input name="submit" class="btn btn-primary" value="Submit" id="btnSubmit" />
+
+</form>
+
+<!-- copy of input fields group -->
+<div class="form-group fieldGroupText" style="display: none;">
+    <div class="input-group">
+        <input type="text" name="question[]" required class="form-control" placeholder="Enter a question" />
+        <div class="input-group-addon">
+            <a href="javascript:void(0)" class="btn btn-danger remove"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</a>
+        </div>
+    </div>
+</div>
+
+<div class="form-group fieldGroupNumeric" style="display: none;">
+    <div class="input-group">
+        <input type="text" name="question[]" class="form-control" placeholder="Enter a question" />
+        <div class="input-group-addon">
+            <a href="javascript:void(0)" class="btn btn-danger remove"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</a>
+        </div>
+    </div>
+</div>
+
+<div class="form-group fieldGroupBoolean" style="display: none;">
+    <div class="input-group">
+        <input type="text" name="question[]" class="form-control" placeholder="Enter a question" />
+        <div class="input-group-addon">
+            <a href="javascript:void(0)" class="btn btn-danger remove"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</a>
+        </div>
+    </div>
+</div>
+
+<div class="form-group fieldGroupDateTime" style="display: none;">
+    <div class="input-group">
+        <input type="text" name="question[]" class="form-control" placeholder="Enter a question" />
+        <div class="input-group-addon">
+            <a href="javascript:void(0)" class="btn btn-danger remove"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</a>
+        </div>
+    </div>
+</div>
+
+<div class="form-group fieldGroupMultipleChoice" style="display: none;">
+    <div class="input-group multiple">
+        <input type="text" name="question[]" class="form-control" placeholder="Enter a question" />
+        <div class="input-group-addon">
+            <a href="javascript:void(0)" class="btn btn-success addOption"><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> Add</a>
+            <a href="javascript:void(0)" class="btn btn-danger remove"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var item = 0;
+        var option = 0;
+        //add more fields group
+        $(".addMore").click(function () {
+            var type = $('#ItemTypes').val();
+
+            if ($('#ItemTypes').val() == 1) {
+                var fieldHTML = '<div class="form-group fieldGroup" data-type=type_' + type + ' data-item=item_' + item + ' > ' + $(".fieldGroupText").html() + '</div > ';
+                $('body').find('.fieldGroup:last').after(fieldHTML);
+                $('#itemIndex').val(item);
+            }
+            else if ($('#ItemTypes').val() == 2) {
+                var fieldHTML = '<div class="form-group fieldGroup" data-type=type_' + type + ' data-item=item_' + item + ' > ' + $(".fieldGroupNumeric").html() + '</div>';
+                $('body').find('.fieldGroup:last').after(fieldHTML);
+                $('#itemIndex').val(item);
+            }
+            else if ($('#ItemTypes').val() == 3) {
+                var fieldHTML = '<div class="form-group fieldGroup" data-type=type_' + type + ' data-item=item_' + item + ' > ' + $(".fieldGroupBoolean").html() + '</div>';
+                $('body').find('.fieldGroup:last').after(fieldHTML);
+                $('#itemIndex').val(item);
+            }
+            else if ($('#ItemTypes').val() == 4) {
+                var fieldHTML = '<div class="form-group fieldGroup" data-type=type_' + type + ' data-item=item_' + item + ' > ' + $(".fieldGroupDateTime").html() + '</div>';
+                $('body').find('.fieldGroup:last').after(fieldHTML);
+                $('#itemIndex').val(item);
+            }
+            else if ($('#ItemTypes').val() == 5) {
+                var fieldHTML = '<div class="form-group fieldGroup" data-type=type_' + type + ' data-item=item_' + item + ' > ' + $(".fieldGroupMultipleChoice").html() + '</div>';
+                $('body').find('.fieldGroup:last').after(fieldHTML);
+                $('#itemIndex').val(item);
+            }
+            else {
+                alert("You must choose one option!");
+            }
+
+            item++;
+        });
+
+        $("body").on("click", ".addOption", function () {
+            var fieldHTML = '<div class="form-group fieldOption"> <input data-option=option_' + option + ' type = "text" name = "question[]" class="form-control" placeholder = "Option" /> ';
+            fieldHTML += ' <a href="javascript:void(0)" class="btn btn-danger removeOption"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</a>';
+            fieldHTML += '</div>';
+            $('body').find('.multiple').after(fieldHTML);
+            option++;
+        });
+
+        $("body").on("click", ".removeOption", function () {
+            $(this).parents(".fieldOption").remove();
+            option--;
+        });
+
+        //remove fields group
+        $("body").on("click", ".remove", function () {
+            $(this).parents(".fieldGroup").remove();
+            item--;
+            $('#itemIndex').val(item);
+        });
+    });
+
+    $("#btnSubmit").click(function () {
+        var data = [];
+
+        var inputs = $('div[data-item] input[type=text]').not('input[data-option]');
+
+        for (var i = 0; i < inputs.length; i++) {
+            item = {};
+            item["Text"] = inputs[i].value;
+            item["Type"] = inputs[i].parentElement.parentElement.attributes[1].value.split('_')[1];
+
+            //adding each choice
+            if (inputs[i].parentElement.parentElement.attributes[1].value.split('_')[1] == 5) {
+                var multipleArr = [];
+                
+                for (var a = 0; a < $('div[data-item] input[data-option]').length; a++) {
+                    itemMultiple = {};
+                    itemMultiple["Text"] = $('div[data-item] input[data-option]')[a].value;
+                    multipleArr.push(itemMultiple);
+                }
+
+                item["MultipleChoice"] = multipleArr;
+            }
+
+            data.push(item);
+        };
+        console.log(data);
+
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(data),
+            url: 'Questionnaire/Questionnaire',
+            contentType: "application/json",
+            success: function (data) {
+                alert(data.msg);
+            },
+            error: function (data) {
+                alert('error');
+            }
+        });
+    });
+
+</script>

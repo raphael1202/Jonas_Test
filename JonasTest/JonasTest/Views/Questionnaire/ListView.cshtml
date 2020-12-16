@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Data.Entities.Question>
+
+@{
+    ViewBag.Title = "ListView";
+}
+
+<h2>Questions list</h2>
+
+<table class="table table-condensed table-hover">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(e => e.Text)</th>
+            <th>@Html.DisplayNameFor(e => e.TypeDesc)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in ViewBag.Questions)
+        {
+            <tr>
+                <td>@employee.Text</td>
+                <td>@employee.TypeDesc</td>
+            </tr>
+        }
+    </tbody>
+</table>  
