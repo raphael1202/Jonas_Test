@@ -1,0 +1,144 @@
+﻿@model Data.Entities.Question
+
+@{
+    ViewBag.Title = "PreviewQuestion";
+}
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Validate Question</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">@ViewBag.Text</label>
+        </div>
+        <div class="form-group row">
+            @if (Model.Type == 1)
+            {
+                <div class="col-sm-10">
+                    <input id="textValidation" class="form-control" type="text" />
+                </div>
+            }
+            else if (Model.Type == 2)
+            {
+                <div class="col-sm-10">
+                    <input id="numericValidation" class="form-control" type="text" />
+                </div>
+            }
+            else if (Model.Type == 3)
+            {
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                    <label class="form-check-label" for="inlineRadio1">True</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                    <label class="form-check-label" for="inlineRadio2">False</label>
+                </div>
+            }
+            else if (Model.Type == 4)
+            {
+                <div class="col-sm-10">
+                    <input id="dateTimeValidation" class="form-control" type="date" />
+                </div>
+            }
+            else if (Model.Type == 5)
+            {
+                foreach (var choice in ViewBag.Choices)
+                {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                        <label class="form-check-label" for="inlineCheckbox1">@choice.Text</label>
+                    </div>
+                }
+            }
+
+        </div>
+        <div class="alert-danger error" style="display:none">
+
+        </div>
+        <div class="alert-success success" style="display:none">
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary validate">Validate</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('.validate').click(function () {
+        if (@Model.Type == 1) {
+            var letters = /^[a-zA-Z]+$/;
+
+            if ($('input').val().match(letters)) {
+                Sucess("Your Registration letters has accepted");
+                $('input').focus();
+                return true;
+            }
+            else {
+                Error("Please input letters characters only");
+                $('input').focus();
+                return false;
+            }
+        }
+        else if (@Model.Type == 2) {
+            var numbers = /^[0-9]+$/;
+
+            if ($('input').val().match(numbers)) {
+                Sucess("Your Registration numbers has accepted");
+                $('input').focus();
+                return true;
+            }
+            else {
+                Error("Please input numeric characters only");
+                $('input').focus();
+                return false;
+            }
+        }
+        else if (@Model.Type == 3) {
+            if ($('input[name="inlineRadioOptions"]:checked').length > 0) {
+                Sucess("Your option has been accepted");
+                return true;
+            }
+            else {
+                Error("Please check at least one option");
+                $('input').focus();
+                return false;
+            }
+        }
+        else if (@Model.Type == 4) {
+            console.log('a');
+            var date = $('input').val();
+            var regEx = /^\d{4}-\d{2}-\d{2}$/;
+            if (!date.match(regEx)) {
+                Error("Please enter a valid date");
+            } else {
+                Sucess("Your Registration date is accepted");
+            }
+        }
+         else if (@Model.Type == 5) {
+            if ($('input[type="checkbox"]:checked').length > 0) {
+                Sucess("Your option has been accepted");
+                return true;
+            }
+            else {
+                Error("Please check at least one option");
+                $('input').focus();
+                return false;
+            }
+        }
+    });
+
+    function Sucess(msg) {
+        $('.error').hide();
+        $('.success').text(msg).show();
+    };
+
+    function Error(msg) {
+        $('.success').hide();
+        $('.error').text(msg).show();
+    };
+</script>

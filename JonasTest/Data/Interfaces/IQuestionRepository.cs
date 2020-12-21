@@ -9,6 +9,9 @@ namespace Data.Interfaces
         IEnumerable<Question> GetAll();
         void InsertAll(List<Question> questions);
         void DeleteAll();
+        void DeleteQuestion(Question question);
+        //void UpdateQuestion(Question question);
+        Question PreviewQuestion(Question question);
         void Save();
     }
 }

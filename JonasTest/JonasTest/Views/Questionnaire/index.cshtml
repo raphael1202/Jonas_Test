@@ -11,27 +11,31 @@
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script src="~/Scripts/bootstrap.min.js"></script>
 
-<h2>index</h2>
+<h2>Add Questions</h2>
 
 <input id="itemIndex" value="@itemIndex" style="display:none" />
 <input id="itemOption" value="@itemOption" style="display:none" />
 
 <form method="post">
 
-    <div class="form-group fieldGroup">
-        <div class="input-group">
-            @Html.EnumDropDownListFor(m => m.ItemTypes, "Select a question type", new { @class = "form-control" })
-            <div class="input-group-addon">
-                <a href="javascript:void(0)" class="btn btn-success addMore"><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> Add</a>
+
+    <div class="form-group">
+        <div class="form-inline fieldGroup">
+            <div class="form-group mx-sm-3 mb-2">
+                @Html.EnumDropDownListFor(m => m.ItemTypes, "Select a question type", new { @class = "form-control" })
             </div>
+            <a href="javascript:void(0)" class="btn btn-success addMore"><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> Add</a>
         </div>
     </div>
 
-    <input name="submit" class="btn btn-primary" value="Submit" id="btnSubmit" />
-
+    <div class="form-group">
+        <input name="submit" class="btn btn-primary" value="Submit" id="btnSubmit" />
+        <a name="back" class="btn btn-default" href='@Url.Action("ListView", "Questionnaire")'>Back</a>
+    </div>
 </form>
 
 <!-- copy of input fields group -->
+
 <div class="form-group fieldGroupText" style="display: none;">
     <div class="input-group">
         <input type="text" name="question[]" required class="form-control" placeholder="Enter a question" />
@@ -147,39 +151,63 @@
         var inputs = $('div[data-item] input[type=text]').not('input[data-option]');
 
         for (var i = 0; i < inputs.length; i++) {
-            item = {};
-            item["Text"] = inputs[i].value;
-            item["Type"] = inputs[i].parentElement.parentElement.attributes[1].value.split('_')[1];
+            if (inputs[i].value == "") {
+                alert("You must fill all the questions before submitting");
+                return false;
+            }
+        };
 
-            //adding each choice
-            if (inputs[i].parentElement.parentElement.attributes[1].value.split('_')[1] == 5) {
-                var multipleArr = [];
-                
-                for (var a = 0; a < $('div[data-item] input[data-option]').length; a++) {
-                    itemMultiple = {};
-                    itemMultiple["Text"] = $('div[data-item] input[data-option]')[a].value;
-                    multipleArr.push(itemMultiple);
+        if (inputs.length == 0) {
+            alert("You must add at least one question before submitting");
+        } else {
+            for (var i = 0; i < inputs.length; i++) {
+                item = {};
+                item["Text"] = inputs[i].value;
+                item["Type"] = inputs[i].parentElement.parentElement.attributes[1].value.split('_')[1];
+
+                //adding each choice
+                if (inputs[i].parentElement.parentElement.attributes[1].value.split('_')[1] == 5) {
+                    var multipleArr = [];
+                    var options = $('div[data-item] input[data-option]');
+
+                    if (options.length == 0 || options.length == 1) {
+                        alert("You must add at least two options before submitting");
+                        return false;
+                    }
+
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value == "") {
+                            alert("You must fill all the options before submitting");
+                            return false;
+                        }
+                    }
+
+                    for (var a = 0; a < options.length; a++) {
+                        itemMultiple = {};
+                        itemMultiple["Text"] = $('div[data-item] input[data-option]')[a].value;
+                        multipleArr.push(itemMultiple);
+                    }
+
+                    item["MultipleChoice"] = multipleArr;
                 }
 
-                item["MultipleChoice"] = multipleArr;
-            }
+                data.push(item);
+            };
 
-            data.push(item);
+            $.ajax({
+                type: "POST",
+                data: JSON.stringify(data),
+                url: 'Questionnaire/Questionnaire',
+                contentType: "application/json",
+                success: function (data) {
+                    alert(data.msg);
+                    location.reload();
+                },
+                error: function (data) {
+                    alert(data.msg);
+                }
+            });
         };
-        console.log(data);
-
-        $.ajax({
-            type: "POST",
-            data: JSON.stringify(data),
-            url: 'Questionnaire/Questionnaire',
-            contentType: "application/json",
-            success: function (data) {
-                alert(data.msg);
-            },
-            error: function (data) {
-                alert('error');
-            }
-        });
     });
 
 </script>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities
@@ -11,6 +12,7 @@ namespace Data.Entities
         public int Type { get; set; }
 
         [NotMapped]
+        [Display(Name = "Question Type")]
         public string TypeDesc { get; set; }
 
         [NotMapped]

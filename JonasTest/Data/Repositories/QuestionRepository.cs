@@ -18,15 +18,15 @@ namespace Data.Repositories
 
         public void DeleteAll()
         {
-            _context.Questions.RemoveRange(GetAll());
-            _context.MultipleChoices.RemoveRange(GetAllMultiple());
+            //_context.Questions.RemoveRange(GetAll());
+            //_context.MultipleChoices.RemoveRange(GetAllMultiple());
         }
 
         public IEnumerable<Question> GetAll()
         {
             var questions = _context.Questions.ToList();
 
-            foreach(var question in questions.Where(q => q.Type == 5))
+            foreach (var question in questions.Where(q => q.Type == 5))
             {
                 var choices = _context.MultipleChoices.Where(c => c.QuestionId == question.Id);
                 question.SetChoices(choices.ToList());
@@ -84,6 +84,28 @@ namespace Data.Repositories
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public void DeleteQuestion(Question questionId)
+        {
+            Question question = new Question();
+            question = _context.Questions.Find(questionId.Id);
+
+            _context.Questions.Remove(question);
+            Save();
+        }
+
+        //public void UpdateQuestion(Question questionId)
+        //{
+        //    Question 
+        //}
+
+        public Question PreviewQuestion(Question questionId)
+        {
+            Question question = new Question();
+            question = _context.Questions.Find(questionId.Id);
+
+            return question;
         }
     }
 }
